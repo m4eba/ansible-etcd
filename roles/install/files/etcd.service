@@ -1,0 +1,10 @@
+[Unit]
+Description=etcd distributed reliable key-value store
+
+[Service]
+Type=notify
+WorkingDirectory=/opt/etcd/bin
+ExecStart=/opt/etcd/bin/etcd --config-file /etc/etcd/etcd.conf.yaml
+Restart=always
+TimeoutSec=30
+Restart=on-failure

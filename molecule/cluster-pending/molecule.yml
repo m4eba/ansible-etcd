@@ -1,0 +1,44 @@
+---
+scenario:
+  name: cluster-pending
+dependency:
+  name: galaxy
+driver:
+  name: docker
+platforms:
+  - name: instance1
+    image: jrei/systemd-ubuntu
+    command: /lib/systemd/systemd
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
+    groups:
+      - etcd
+  - name: instance2
+    image: jrei/systemd-ubuntu
+    command: /lib/systemd/systemd
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
+    groups:
+      - etcd
+  - name: instance3
+    image: jrei/systemd-ubuntu
+    command: /lib/systemd/systemd
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
+    groups:
+      - etcd
+  - name: instance4
+    image: jrei/systemd-ubuntu
+    command: /lib/systemd/systemd
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
+    groups:
+      - pendingetcd
+provisioner:
+  name: ansible
+verifier:
+  name: ansible

@@ -1,0 +1,52 @@
+---
+- name: tmp dir
+  delegate_to: localhost
+  tempfile:
+    state: directory
+    suffix: etcd
+  register: tmp
+
+- name: private key
+  delegate_to: localhost
+  openssl_privatekey:
+    path: '{{tmp.path}}/etcd.key'
+    type: RSA
+    size: 4096
+    state: present
+
+- name: csr
+  delegate_to: localhost
+  openssl_csr:
+    path: '{{tmp.path}}/etcd.csr'
+    privatekey_path: '{{tmp.path}}/etcd.key'
+    common_name: '{{inventory_hostname}}'
+    key_usage:
+      - digitalSignature
+    extended_key_usage:
+      - serverAuth
+      - clientAuth
+    subject_alt_name:
+      - IP:{{private_ip}}
+
+- name: signed certificate
+  delegate_to: localhost
+  openssl_certificate:
+    path: '{{tmp.path}}/etcd.crt'
+    csr_path: '{{tmp.path}}/etcd.csr'
+    ownca_path: '{{ca_cert_path}}/ca.crt'
+    ownca_privatekey_path: '{{ca_cert_path}}/ca.key'
+    provider: ownca
+
+- name: upload
+  copy:
+    src: '{{item}}'
+    dest: /etc/etcd/pki
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - '{{tmp.path}}/etcd.key'
+    - '{{tmp.path}}/etcd.crt'
+    - '{{ca_cert_path}}/ca.crt'
+  notify:
+    - restart etcd

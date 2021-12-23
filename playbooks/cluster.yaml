@@ -1,0 +1,64 @@
+---
+- name: CA
+  hosts: localhost
+  roles:
+    - { role: ca, tags: ca }
+
+- name: Collecting facts
+  hosts: etcd
+  remote_user: root
+  roles:
+    - { role: facts, tags: facts }
+
+- name: execution plan
+  hosts: localhost
+  roles:
+    - { role: plan, tags: plan }
+
+- name: remove commands
+  hosts: etcd_modify
+  remote_user: root
+  roles:
+    - role: remove
+      tags: remove
+      when: hostvars['localhost']['etcd_main'] is defined
+
+- name: prepare
+  hosts: etcd
+  remote_user: root
+  roles:
+    - { role: prepare, tags: prepare }
+
+- name: pki
+  hosts: etcd
+  remote_user: root
+  roles:
+    - role: pki
+      tags: pki
+      when: not etcd_key
+
+- name: init etcd
+  hosts: etcd
+  remote_user: root
+  roles:
+    - role: install
+      tags: install
+      when: hostvars['localhost']['etcd_main'] is undefined
+
+- name: handling pending
+  hosts: etcd
+  remote_user: root
+  serial: 1
+  roles:
+    - role: pending
+      tags: pending
+      when: ispending is defined
+
+- name: add servers
+  hosts: etcd
+  remote_user: root
+  serial: 1
+  roles:
+    - role: add
+      tags: add
+      when: ispending is undefined and run_add is defined

@@ -1,0 +1,10 @@
+---
+- name: prepare
+  hosts: localhost
+  tasks:
+    - add_host:
+        name: instance4
+        groups:
+          - etcd
+        changed_when: False
+- import_playbook: ../../playbooks/cluster.yaml

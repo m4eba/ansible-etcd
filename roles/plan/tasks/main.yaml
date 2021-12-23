@@ -1,0 +1,7 @@
+- name: cluster
+  set_fact:
+    cluster: "{% for host in groups['etcd'] %}{{ hostvars[host]['ansible_facts']['hostname'] }}=https://{{ hostvars[host]['private_ip'] }}:2380{% if not loop.last %},{% endif %}{% endfor %}"
+  when: etcd_main is undefined
+- name:
+  import_tasks: plan.yaml
+  when: etcd_main is defined

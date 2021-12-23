@@ -1,0 +1,49 @@
+---
+- name: download etcd
+  get_url:
+    url: 'https://storage.googleapis.com/etcd/v{{etcd_version}}/etcd-v{{etcd_version}}-linux-amd64.tar.gz'
+    dest: '/opt/etcd/etcd-{{etcd_version}}.tgz'
+    mode: 0755
+    owner: root
+    group: root
+
+- name: extract
+  unarchive:
+    src: '/opt/etcd/etcd-{{etcd_version}}.tgz'
+    dest: /opt/etcd
+    owner: root
+    group: root
+    remote_src: true
+    creates: '/opt/etcd/etcd-v{{etcd_version}}-linux-amd64/etcd'
+
+- name: system link
+  file:
+    path: '/opt/etcd/bin'
+    src: '/opt/etcd/etcd-v{{etcd_version}}-linux-amd64'
+    state: link
+
+- name: configuration file
+  template:
+    src: etcd.conf.yaml.j2
+    dest: /etc/etcd/etcd.conf.yaml
+    owner: root
+    group: root
+    mode: 0600
+  notify:
+    - restart etcd
+
+- name: etcd service
+  copy:
+    src: etcd.service
+    dest: /etc/systemd/system/etcd.service
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - reload systemd
+
+- name: Enable and start etcd
+  service:
+    name: etcd
+    enabled: yes
+    state: started

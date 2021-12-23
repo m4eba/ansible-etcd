@@ -1,0 +1,21 @@
+---
+- shell: ip -f inet addr show eth0 | sed -En -e 's/.*inet ([0-9.]+).*/\1/p'
+  register: privateIP
+
+- name: get services
+  service_facts:
+
+- name: test etcd is running
+  assert:
+    that: ansible_facts.services["etcd.service"].state == 'running'
+
+- name: insert value
+  command: /opt/etcd/bin/etcdctl --cacert /etc/etcd/pki/ca.crt --cert /etc/etcd/pki/etcd.crt --key /etc/etcd/pki/etcd.key --endpoints={{privateIP.stdout}}:2379 put test value
+
+- name: get value
+  command: /opt/etcd/bin/etcdctl --cacert /etc/etcd/pki/ca.crt --cert /etc/etcd/pki/etcd.crt --key /etc/etcd/pki/etcd.key --endpoints={{privateIP.stdout}}:2379 get test
+  register: value
+
+- name:
+  assert:
+    that: value.stdout_lines[1] == 'value'

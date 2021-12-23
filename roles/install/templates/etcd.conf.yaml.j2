@@ -1,0 +1,26 @@
+data-dir: /var/lib/etcd
+name: {{inventory_hostname}}
+
+listen-peer-urls: https://{{private_ip}}:2380
+listen-client-urls: https://{{private_ip}}:2379
+initial-advertise-peer-urls: https://{{private_ip}}:2380
+advertise-client-urls: https://{{private_ip}}:2379
+
+
+initial-cluster: {{hostvars['localhost']['cluster']}}
+
+{% if hostvars['localhost']['etcd_main'] is not defined %}
+initial-cluster-state: new
+{% else %}
+initial-cluster-state: existing
+{% endif %}
+
+client-transport-security:
+  cert-file: /etc/etcd/pki/etcd.crt
+  key-file: /etc/etcd/pki/etcd.key
+  trusted-ca-file: /etc/etcd/pki/ca.crt
+peer-transport-security:
+  cert-file: /etc/etcd/pki/etcd.crt
+  key-file: /etc/etcd/pki/etcd.key
+  trusted-ca-file: /etc/etcd/pki/ca.crt
+

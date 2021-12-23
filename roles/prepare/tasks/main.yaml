@@ -1,0 +1,46 @@
+---
+- name: create directory
+  file:
+    path: /opt/etcd/
+    state: directory
+    owner: root
+    group: root
+
+- name: adjust path
+  lineinfile:
+    path: /etc/profile
+    line: export PATH="$PATH:/opt/etcd/bin"
+    state: present
+    create: true
+    insertafter: EOF
+
+- name: environment variable
+  lineinfile:
+    path: /etc/profile
+    line: export ETCDCTL_API=3
+    state: present
+    create: true
+    insertafter: EOF
+
+- name: data directory
+  file:
+    path: /var/lib/etcd
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: data directory
+  file:
+    path: /etc/etcd
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: pki directory
+  file:
+    path: /etc/etcd/pki
+    state: directory
+    owner: root
+    group: root

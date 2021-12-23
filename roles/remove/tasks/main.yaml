@@ -1,0 +1,6 @@
+---
+- debug:
+    msg: '{{ etcd_members }}'
+- name: process remove
+  include_tasks: remove.yaml
+  loop: '{{ remove }}'

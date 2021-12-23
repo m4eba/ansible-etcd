@@ -1,0 +1,68 @@
+---
+- name: instances list
+  set_fact:
+    installed: '{{ hostvars[etcd_main] | json_query("etcd_members.members[*].name") }}'
+- name: debug installed
+  debug:
+    var: installed
+- set_fact:
+    cluster: ''
+- set_fact:
+    cluster_items: '{{ installed | intersect(groups["etcd"]) }}'
+- name: set cluster
+  set_fact:
+    cluster: "{% for host in cluster_items %}{{ hostvars[host]['ansible_facts']['hostname'] }}=https://{{ hostvars[host]['private_ip'] }}:2380{% if not loop.last %},{% endif %}{% endfor %}"
+- name: debug cluster
+  debug:
+    var: cluster
+- name: pending list
+  set_fact:
+    pending_items: '{{ hostvars[etcd_main] | json_query("etcd_members.members[?(name == undefined)]") }}'
+- name: empty pending items
+  set_fact:
+    pending: []
+- name: debug pending
+  debug:
+    var: pending_items
+- name: process pending
+  include_tasks: pending.yaml
+  loop: '{{ pending_items }}'
+- name: lsit of installed and pending
+  set_fact:
+    installed_pending: '{{ installed + pending }}'
+- name: instances to add
+  set_fact:
+    add: '{{ groups["etcd"] | difference(installed_pending) }}'
+- name: debug add list
+  debug:
+    var: add
+- name: debug pending list
+  debug:
+    var: pending
+- name: instances to remove
+  set_fact:
+    remove: '{{ installed | difference(groups["etcd"]) }}'
+- name: debug remove list
+  debug:
+    var: remove
+
+- name: add host to modify group
+  add_host:
+    name: '{{ hostvars["localhost"]["etcd_main"] }}'
+    groups:
+      - etcd_modify
+  when:
+    - add | length > 0 or remove | length > 0
+
+- name: delegate remove to etcd_main
+  delegate_to: '{{etcd_main}}'
+  delegate_facts: true
+  set_fact:
+    remove: '{{hostvars["localhost"].remove}}'
+
+- name: delegate add
+  delegate_to: '{{item}}'
+  delegate_facts: true
+  set_fact:
+    run_add: true
+  loop: '{{add}}'

@@ -1,0 +1,14 @@
+---
+- name: prepare groups
+  hosts: removeetcd
+  tasks:
+    - add_host:
+        name: instance4
+        groups:
+          - etcd
+    - add_host:
+        name: instance5
+        groups:
+          - etcd
+- name: prepare cluster
+  import_playbook: ../../playbooks/cluster.yaml

@@ -1,0 +1,34 @@
+---
+- name: create folder for CA
+  file:
+    path: '{{ca_cert_path}}'
+    state: directory
+    mode: '0700'
+
+- name: CA key
+  openssl_privatekey:
+    path: '{{ca_cert_path}}/ca.key'
+    type: RSA
+    size: 4096
+    state: present
+
+- name: CA CSR
+  openssl_csr:
+    path: '{{ca_cert_path}}/ca.csr'
+    privatekey_path: '{{ca_cert_path}}/ca.key'
+    common_name: ca
+    organization_name: 'Etcd CA'
+    basic_constraints:
+      - CA:TRUE
+      - pathlen:1
+    basic_constraints_critical: True
+    key_usage:
+      - keyCertSign
+      - digitalSignature
+
+- name: CA certificate
+  openssl_certificate:
+    path: '{{ca_cert_path}}/ca.crt'
+    privatekey_path: '{{ca_cert_path}}/ca.key'
+    csr_path: '{{ca_cert_path}}/ca.csr'
+    provider: selfsigned

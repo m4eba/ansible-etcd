@@ -1,0 +1,12 @@
+---
+- name: add this instance to cluster
+  delegate_to: 'localhost'
+  delegate_facts: true
+  set_fact:
+    cluster: "{{ hostvars['localhost'].cluster }},{{ inventory_hostname }}=https://{{ private_ip }}:2380"
+- name: debug cluster
+  debug:
+    msg: 'cluster: {{ hostvars["localhost"].cluster }}'
+- name: install
+  include_role:
+    name: install

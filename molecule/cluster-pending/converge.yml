@@ -1,0 +1,9 @@
+---
+- name: add pending to group
+  hosts: localhost
+  tasks:
+    - add_host:
+        name: instance4
+        groups:
+          - etcd
+- import_playbook: ../../playbooks/cluster.yaml

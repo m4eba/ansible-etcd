@@ -1,0 +1,12 @@
+---
+- name: set query
+  set_fact:
+    query: 'members[?(name==`{{item}}`)].ID'
+- name: get id
+  set_fact:
+    remove_id: "{{ '%x' % (etcd_members  | json_query(query))[0] }}"
+- name: debug remove_id
+  debug:
+    var: remove_id
+- name: remove command
+  command: '/opt/etcd/bin/etcdctl --cacert /etc/etcd/pki/ca.crt --key /etc/etcd/pki/etcd.key --cert /etc/etcd/pki/etcd.crt --endpoints https://{{private_ip}}:2379 member remove {{remove_id}} '
