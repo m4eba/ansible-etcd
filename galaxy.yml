@@ -1,5 +1,6 @@
 namespace: m4eba
 name: etcd
+version: 0.0.1
 readme: README.md
 authors:
   - m4eba
