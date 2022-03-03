@@ -3,7 +3,7 @@
     query: 'members[?(name==`{{inventory_hostname}}`)]'
 - name: get member list
   delegate_to: '{{ hostvars["localhost"]["etcd_main"] }}'
-  command: '/opt/etcd/bin/etcdctl --cacert /etc/etcd/pki/ca.crt --key /etc/etcd/pki/etcd.key --cert /etc/etcd/pki/etcd.crt --endpoints https://{{ hostvars[ hostvars["localhost"]["etcd_main"] ].private_ip }}:2379 member list -w json'
+  command: '/opt/etcd/bin/etcdctl --cacert /etc/etcd/pki/ca.crt --key /etc/etcd/pki/etcd.key --cert /etc/etcd/pki/etcd.crt --endpoints https://{{ hostvars[ hostvars["localhost"]["etcd_main"] ].etcd_ip }}:2379 member list -w json'
   register: result
 - set_fact:
     new_members: '{{ result.stdout }}'

@@ -1,10 +1,10 @@
 data-dir: /var/lib/etcd
 name: {{inventory_hostname}}
 
-listen-peer-urls: https://{{private_ip}}:2380
-listen-client-urls: https://{{private_ip}}:2379
-initial-advertise-peer-urls: https://{{private_ip}}:2380
-advertise-client-urls: https://{{private_ip}}:2379
+listen-peer-urls: https://{{etcd_ip}}:2380
+listen-client-urls: https://{{etcd_ip}}:2379
+initial-advertise-peer-urls: https://{{etcd_ip}}:2380
+advertise-client-urls: https://{{etcd_ip}}:2379
 
 
 initial-cluster: {{hostvars['localhost']['cluster']}}

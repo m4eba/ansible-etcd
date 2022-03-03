@@ -13,9 +13,9 @@
     type: RSA
     size: 4096
     state: present
-
 - name: csr
   delegate_to: localhost
+  delegate_facts: true
   openssl_csr:
     path: '{{tmp.path}}/etcd.csr'
     privatekey_path: '{{tmp.path}}/etcd.key'
@@ -26,27 +26,27 @@
       - serverAuth
       - clientAuth
     subject_alt_name:
-      - IP:{{private_ip}}
+      - IP:{{etcd_ip}}
 
 - name: signed certificate
   delegate_to: localhost
   openssl_certificate:
     path: '{{tmp.path}}/etcd.crt'
     csr_path: '{{tmp.path}}/etcd.csr'
-    ownca_path: '{{ca_cert_path}}/ca.crt'
-    ownca_privatekey_path: '{{ca_cert_path}}/ca.key'
+    ownca_path: '{{etcd_ca_cert_path}}/ca.crt'
+    ownca_privatekey_path: '{{etcd_ca_cert_path}}/ca.key'
     provider: ownca
 
 - name: upload
   copy:
     src: '{{item}}'
-    dest: /etc/etcd/pki
+    dest: '{{etcd_pki_destination}}'
     owner: root
     group: root
     mode: 0644
   with_items:
     - '{{tmp.path}}/etcd.key'
     - '{{tmp.path}}/etcd.crt'
-    - '{{ca_cert_path}}/ca.crt'
+    - '{{etcd_ca_cert_path}}/ca.crt'
   notify:
     - restart etcd

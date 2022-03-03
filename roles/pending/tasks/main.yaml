@@ -3,7 +3,7 @@
   delegate_to: 'localhost'
   delegate_facts: true
   set_fact:
-    cluster: "{{ hostvars['localhost'].cluster }},{{ inventory_hostname }}=https://{{ private_ip }}:2380"
+    cluster: "{{ hostvars['localhost'].cluster }},{{ inventory_hostname }}=https://{{ etcd_ip }}:2380"
 - name: debug cluster
   debug:
     msg: 'cluster: {{ hostvars["localhost"].cluster }}'

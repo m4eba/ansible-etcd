@@ -11,7 +11,7 @@
     cluster_items: '{{ installed | intersect(groups["etcd"]) }}'
 - name: set cluster
   set_fact:
-    cluster: "{% for host in cluster_items %}{{ hostvars[host]['ansible_facts']['hostname'] }}=https://{{ hostvars[host]['private_ip'] }}:2380{% if not loop.last %},{% endif %}{% endfor %}"
+    cluster: "{% for host in cluster_items %}{{ hostvars[host]['ansible_facts']['hostname'] }}=https://{{ hostvars[host]['etcd_ip'] }}:2380{% if not loop.last %},{% endif %}{% endfor %}"
 - name: debug cluster
   debug:
     var: cluster

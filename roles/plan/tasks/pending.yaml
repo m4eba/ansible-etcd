@@ -12,7 +12,7 @@
 - name: find host
   set_fact:
     peerhost: '{{item}}'
-    when: peerurl == hostvars[item].private_ip | regex_search('([0-9\\.]+)','\\1')
+    when: peerurl == hostvars[item].etcd_ip | regex_search('([0-9\\.]+)','\\1')
   loop: '{{ groups["etcd"] }}'
 - name: peerhost
   debug:

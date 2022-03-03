@@ -8,7 +8,7 @@
       register: privateIP
     - name: set pending ip
       set_fact:
-        private_ip: '{{privateIP.stdout}}'
+        etcd_ip: '{{privateIP.stdout}}'
     - name: run add command
       delegate_to: instance1
-      command: '/opt/etcd/bin/etcdctl --cacert /etc/etcd/pki/ca.crt --key /etc/etcd/pki/etcd.key --cert /etc/etcd/pki/etcd.crt --endpoints https://{{ hostvars["instance1"]["private_ip"] }}:2379 member add {{inventory_hostname}} --peer-urls=https://{{private_ip}}:2380'
+      command: '/opt/etcd/bin/etcdctl --cacert /etc/etcd/pki/ca.crt --key /etc/etcd/pki/etcd.key --cert /etc/etcd/pki/etcd.crt --endpoints https://{{ hostvars["instance1"]["etcd_ip"] }}:2379 member add {{inventory_hostname}} --peer-urls=https://{{etcd_ip}}:2380'
