@@ -1,0 +1,3 @@
+---
+etcd_ca_cert_path: ~/.ssh/etcd
+etcd_pki_destination: /etc/etcd/pki
