@@ -2,24 +2,24 @@
 - name: CA
   hosts: localhost
   roles:
-    - { role: ca, tags: ca }
+    - { role: m4eba.etcd.ca, tags: ca }
 
 - name: Collecting facts
   hosts: etcd
   remote_user: root
   roles:
-    - { role: facts, tags: facts }
+    - { role: m4eba.etcd.facts, tags: facts }
 
 - name: execution plan
   hosts: localhost
   roles:
-    - { role: plan, tags: plan }
+    - { role: m4eba.etcd.plan, tags: plan }
 
 - name: remove commands
   hosts: etcd_modify
   remote_user: root
   roles:
-    - role: remove
+    - role: m4eba.etcd.remove
       tags: remove
       when: hostvars['localhost']['etcd_main'] is defined
 
@@ -27,13 +27,13 @@
   hosts: etcd
   remote_user: root
   roles:
-    - { role: prepare, tags: prepare }
+    - { role: m4eba.etcd.prepare, tags: prepare }
 
 - name: pki
   hosts: etcd
   remote_user: root
   roles:
-    - role: pki
+    - role: m4eba.etcd.pki
       tags: pki
       when: not etcd_key
 
@@ -41,7 +41,7 @@
   hosts: etcd
   remote_user: root
   roles:
-    - role: install
+    - role: m4eba.etcd.install
       tags: install
       when: hostvars['localhost']['etcd_main'] is undefined
 
@@ -50,7 +50,7 @@
   remote_user: root
   serial: 1
   roles:
-    - role: pending
+    - role: m4eba.etcd.pending
       tags: pending
       when: ispending is defined
 
@@ -59,6 +59,6 @@
   remote_user: root
   serial: 1
   roles:
-    - role: add
+    - role: m4eba.etcd.add
       tags: add
       when: ispending is undefined and run_add is defined
