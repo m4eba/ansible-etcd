@@ -1,14 +1,14 @@
 ---
+- name: get ip addresses
+  hosts: all
+  tasks:
+    - import_role: 
+        name: get_ip
 - name: prepare cluster
   import_playbook: ../../playbooks/cluster.yaml
 - name: add pending
   hosts: pendingetcd
   tasks:
-    - shell: ip -f inet addr show eth0 | sed -En -e 's/.*inet ([0-9.]+).*/\1/p'
-      register: privateIP
-    - name: set pending ip
-      set_fact:
-        etcd_ip: '{{privateIP.stdout}}'
     - name: run add command
       delegate_to: instance1
       command: '/opt/etcd/bin/etcdctl --cacert /etc/etcd/pki/ca.crt --key /etc/etcd/pki/etcd.key --cert /etc/etcd/pki/etcd.crt --endpoints https://{{ hostvars["instance1"]["etcd_ip"] }}:2379 member add {{inventory_hostname}} --peer-urls=https://{{etcd_ip}}:2380'

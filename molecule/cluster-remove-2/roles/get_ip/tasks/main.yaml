@@ -1,0 +1,6 @@
+---
+- shell: ip -f inet addr show eth0 | sed -En -e 's/.*inet ([0-9.]+).*/\1/p'
+  changed_when: false
+  register: ip
+- set_fact:
+    etcd_ip: '{{ ip.stdout }}'

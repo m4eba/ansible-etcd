@@ -1,4 +1,9 @@
 ---
+- name: get ip addresses
+  hosts: all
+  tasks:
+    - import_role: 
+        name: get_ip
 - name: prepare
   hosts: localhost
   tasks:
@@ -6,5 +11,5 @@
         name: instance4
         groups:
           - etcd
-        changed_when: False
+      changed_when: false
 - import_playbook: ../../playbooks/cluster.yaml

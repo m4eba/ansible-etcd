@@ -1,4 +1,9 @@
 ---
+- name: get ip addresses
+  hosts: all
+  tasks:
+    - import_role: 
+        name: get_ip
 - name: add pending to group
   hosts: localhost
   tasks:

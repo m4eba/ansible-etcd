@@ -1,4 +1,9 @@
 ---
+- name: get ip addresses
+  hosts: all
+  tasks:
+    - import_role: 
+        name: get_ip
 - name: prepare groups
   hosts: removeetcd
   tasks:
