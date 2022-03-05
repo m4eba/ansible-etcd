@@ -5,7 +5,7 @@ driver:
   name: docker
 platforms:
   - name: instance
-    image: jrei/systemd-ubuntu
+    image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2004}-ansible:latest"
     command: /lib/systemd/systemd
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
