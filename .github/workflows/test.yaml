@@ -12,20 +12,24 @@ jobs:
           - default
     steps:
       - name: Check out codebase
-        uses: actions/checkout@v1
-        with:
-          path: ansible_collection/m4eba/etcd
+        uses: actions/checkout@v2
+
+      - name: mkdir
+        run: mkdir -p /home/runner/.ansible/collections/m4eba/ 
+        
+      - name: link
+        run: ln -s . /home/runner/.ansible/collections/m4eba/etcd
 
       - name: Set up Python 3.8
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v2
         with:
           python-version: 3.8
 
       - name: Install requirements
-        run: pip install -r requirements.txt
+        run: pip3 install -r requirements.txt
 
       - name: Install test dependencies
-        run: pip install ansible molecule[docker] docker
+        run: pip3 install ansible molecule[docker] docker
 
       - name: Run role tests
         run: >-
