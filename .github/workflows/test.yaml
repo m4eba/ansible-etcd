@@ -28,6 +28,10 @@ jobs:
         run: pip install ansible molecule[docker] docker
 
       - name: Run role tests
-        run: molecule --debug test -s ${{ matrix.scenario }}
+        run: >-
+          molecule --version &&
+          ansible --version &&
+          docker -- version &&
+          molecule --debug test -s ${{ matrix.scenario }}
         env:
           MOLECULE_DISTRO: ${{ matrix.distro }}
