@@ -1,0 +1,32 @@
+name: test
+on:
+  push
+jobs:
+  molecule:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        scenario:
+          distro: ["ubuntu2004"],
+          scenario: ["default"]
+    steps:
+      - name: Check out codebase
+        uses: actions/checkout@v1
+        with:
+          path: ansible_collection/m4eba/etcd
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+
+      - name: Install requirements
+        run: pip install -r requirements.txt
+
+      - name: Install test dependencies
+        run: pip install ansible molecule[docker] docker
+
+      - name: Run role tests
+        run: molecule --debug test -s ${{ matrix.scenario }}
+        env:
+          MOLECULE_DISTRO: ${{ matrix.distro }}
