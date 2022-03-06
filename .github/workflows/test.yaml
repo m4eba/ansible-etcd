@@ -6,9 +6,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        scenario:
-          distro: ["ubuntu2004"],
-          scenario: ["default"]
+        distro: ["ubuntu2004"],
+        scenario: ["default"]
     steps:
       - name: Check out codebase
         uses: actions/checkout@v1
