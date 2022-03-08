@@ -16,6 +16,12 @@ jobs:
           - fedora34
         scenario: 
           - default
+          - cluster
+          - cluster-add-1
+          - cluster-add-2
+          - cluster-pending
+          - cluster-remove-1
+          - cluster-remove-2
     steps:
       - name: Check out codebase
         uses: actions/checkout@v2
