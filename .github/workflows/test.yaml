@@ -15,10 +15,10 @@ jobs:
         uses: actions/checkout@v2
 
       - name: mkdir
-        run: mkdir -p /home/runner/.ansible/collections/m4eba/ 
+        run: mkdir -p /home/runner/.ansible/collections/ansible_collections/m4eba/ 
         
       - name: link
-        run: ln -s . /home/runner/.ansible/collections/m4eba/etcd
+        run: ln -s `pwd` /home/runner/.ansible/collections/ansible_collections/m4eba/etcd
 
       - name: Set up Python 3.8
         uses: actions/setup-python@v2
