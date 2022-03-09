@@ -11,11 +11,11 @@
         name: instance4
         groups:
           - etcd
-        changed_when: false
+      changed_when: false
     - add_host:
         name: instance5
         groups:
           - etcd
-        changed_when: false
+      changed_when: false
 
 - import_playbook: ../../playbooks/cluster.yaml
