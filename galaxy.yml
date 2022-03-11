@@ -5,8 +5,6 @@ readme: README.md
 authors:
   - m4eba
 description: An ansible collection to install and manage an etcd cluster.
-license:
-  - MIT
 license_file: 'LICENSE'
 tags: ['etcd']
 dependencies: { community.crypto: '>=2.0.0' }
