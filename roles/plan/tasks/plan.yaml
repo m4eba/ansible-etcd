@@ -5,9 +5,11 @@
 - name: debug installed
   debug:
     var: installed
-- set_fact:
+- name: init cluster variable
+  set_fact:
     cluster: ''
-- set_fact:
+- name: set cluster items
+  set_fact:
     cluster_items: '{{ installed | intersect(groups["etcd"]) }}'
 - name: set cluster
   set_fact:
@@ -55,14 +57,14 @@
     - add | length > 0 or remove | length > 0
 
 - name: delegate remove to etcd_main
-  delegate_to: '{{etcd_main}}'
+  delegate_to: '{{ etcd_main }}'
   delegate_facts: true
   set_fact:
-    remove: '{{hostvars["localhost"].remove}}'
+    remove: '{{ hostvars["localhost"].remove }}'
 
 - name: delegate add
-  delegate_to: '{{item}}'
+  delegate_to: '{{ item }}'
   delegate_facts: true
   set_fact:
     run_add: true
-  loop: '{{add}}'
+  loop: '{{ add }}'

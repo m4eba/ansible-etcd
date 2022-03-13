@@ -2,12 +2,14 @@
 - name: get ip addresses
   hosts: all
   tasks:
-    - import_role: 
+    - name: import get ip
+      import_role: 
         name: get_ip
 - name: prepare
   hosts: localhost
   tasks:
-    - add_host:
+    - name: add instance4 to etcd group
+      add_host:
         name: instance4
         groups:
           - etcd

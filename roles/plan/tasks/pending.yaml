@@ -1,17 +1,18 @@
-- debug:
+- name: debug item
+  debug:
     var: item
 - name: get first peer url
   set_fact:
     peerurl: "{{ item | json_query('peerURLs[0]') }}"
 - name: json query
   set_fact:
-    query: "etcd_members.members[?contains(peerURLs, '{{peerurl}}')]"
+    query: "etcd_members.members[?contains(peerURLs, '{{ peerurl }}')]"
 - name: debug peerurl
   debug:
     var: peerurl
 - name: find host
   set_fact:
-    peerhost: '{{item}}'
+    peerhost: '{{ item }}'
     when: peerurl == hostvars[item].etcd_ip | regex_search('([0-9\\.]+)','\\1')
   loop: '{{ groups["etcd"] }}'
 - name: peerhost
@@ -21,7 +22,7 @@
   set_fact:
     pending: '{{ pending + [ peerhost ] }}'
 - name: set facts
-  delegate_to: '{{peerhost}}'
+  delegate_to: '{{ peerhost }}'
   delegate_facts: true
   set_fact:
     ispending: true

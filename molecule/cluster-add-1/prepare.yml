@@ -2,7 +2,8 @@
 - name: get ip addresses
   hosts: all
   tasks:
-    - import_role: 
+    - name: import get ip
+      import_role: 
         name: get_ip
 - name: prepare cluster
   import_playbook: ../../playbooks/cluster.yaml

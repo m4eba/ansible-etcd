@@ -1,21 +1,21 @@
 ---
 - name: create folder for CA
   file:
-    path: '{{etcd_ca_cert_path}}'
+    path: '{{ etcd_ca_cert_path }}'
     state: directory
     mode: '0700'
 
 - name: CA key
   openssl_privatekey:
-    path: '{{etcd_ca_cert_path}}/ca.key'
+    path: '{{ etcd_ca_cert_path }}/ca.key'
     type: RSA
     size: 4096
     state: present
 
 - name: CA CSR
   openssl_csr:
-    path: '{{etcd_ca_cert_path}}/ca.csr'
-    privatekey_path: '{{etcd_ca_cert_path}}/ca.key'
+    path: '{{ etcd_ca_cert_path }}/ca.csr'
+    privatekey_path: '{{ etcd_ca_cert_path }}/ca.key'
     common_name: ca
     organization_name: 'Etcd CA'
     basic_constraints:
@@ -28,7 +28,7 @@
 
 - name: CA certificate
   openssl_certificate:
-    path: '{{etcd_ca_cert_path}}/ca.crt'
-    privatekey_path: '{{etcd_ca_cert_path}}/ca.key'
-    csr_path: '{{etcd_ca_cert_path}}/ca.csr'
+    path: '{{ etcd_ca_cert_path }}/ca.crt'
+    privatekey_path: '{{ etcd_ca_cert_path }}/ca.key'
+    csr_path: '{{ etcd_ca_cert_path }}/ca.csr'
     provider: selfsigned

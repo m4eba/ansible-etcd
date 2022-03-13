@@ -9,7 +9,7 @@
 - name: private key
   delegate_to: localhost
   openssl_privatekey:
-    path: '{{tmp.path}}/etcd.key'
+    path: '{{ tmp.path }}/etcd.key'
     type: RSA
     size: 4096
     state: present
@@ -17,36 +17,36 @@
   delegate_to: localhost
   delegate_facts: true
   openssl_csr:
-    path: '{{tmp.path}}/etcd.csr'
-    privatekey_path: '{{tmp.path}}/etcd.key'
-    common_name: '{{inventory_hostname}}'
+    path: '{{ tmp.path }}/etcd.csr'
+    privatekey_path: '{{ tmp.path }}/etcd.key'
+    common_name: '{{ inventory_hostname }}'
     key_usage:
       - digitalSignature
     extended_key_usage:
       - serverAuth
       - clientAuth
     subject_alt_name:
-      - IP:{{etcd_ip}}
+      - IP:{{ etcd_ip }}
 
 - name: signed certificate
   delegate_to: localhost
   openssl_certificate:
-    path: '{{tmp.path}}/etcd.crt'
-    csr_path: '{{tmp.path}}/etcd.csr'
-    ownca_path: '{{etcd_ca_cert_path}}/ca.crt'
-    ownca_privatekey_path: '{{etcd_ca_cert_path}}/ca.key'
+    path: '{{ tmp.path }}/etcd.crt'
+    csr_path: '{{ tmp.path }}/etcd.csr'
+    ownca_path: '{{ etcd_ca_cert_path }}/ca.crt'
+    ownca_privatekey_path: '{{ etcd_ca_cert_path }}/ca.key'
     provider: ownca
 
 - name: upload
   copy:
-    src: '{{item}}'
-    dest: '{{etcd_pki_destination}}'
+    src: '{{ item }}'
+    dest: '{{ etcd_pki_destination }}'
     owner: root
     group: root
     mode: 0644
   with_items:
-    - '{{tmp.path}}/etcd.key'
-    - '{{tmp.path}}/etcd.crt'
-    - '{{etcd_ca_cert_path}}/ca.crt'
+    - '{{ tmp.path }}/etcd.key'
+    - '{{ tmp.path }}/etcd.crt'
+    - '{{ etcd_ca_cert_path }}/ca.crt'
   notify:
     - restart etcd

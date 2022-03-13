@@ -5,6 +5,7 @@
     state: directory
     owner: root
     group: root
+    mode: 0755
 
 - name: adjust path
   lineinfile:
@@ -12,6 +13,7 @@
     line: export PATH="$PATH:/opt/etcd/bin"
     state: present
     create: true
+    mode: 0644
     insertafter: EOF
 
 - name: environment variable
@@ -20,6 +22,7 @@
     line: export ETCDCTL_API=3
     state: present
     create: true
+    mode: 0644
     insertafter: EOF
 
 - name: data directory
@@ -44,3 +47,4 @@
     state: directory
     owner: root
     group: root
+    mode: 0640

@@ -10,28 +10,35 @@
 - name: get members
   delegate_to: '{{ hostvars["localhost"]["etcd_main"] }}'
   command: '/opt/etcd/bin/etcdctl --cacert /etc/etcd/pki/ca.crt --key /etc/etcd/pki/etcd.key --cert /etc/etcd/pki/etcd.crt --endpoints https://{{ hostvars[ hostvars["localhost"]["etcd_main"] ].etcd_ip }}:2379 member list -w json'
+  changed_when: false
   register: members
 - name: debug members
   debug:
     var: members
 - name: run add command
   delegate_to: '{{ hostvars["localhost"]["etcd_main"] }}'
-  command: '/opt/etcd/bin/etcdctl --cacert /etc/etcd/pki/ca.crt --key /etc/etcd/pki/etcd.key --cert /etc/etcd/pki/etcd.crt --endpoints https://{{ hostvars[ hostvars["localhost"]["etcd_main"] ].etcd_ip }}:2379 member add {{inventory_hostname}} --peer-urls=https://{{etcd_ip}}:2380 --learner'
+  command: '/opt/etcd/bin/etcdctl --cacert /etc/etcd/pki/ca.crt --key /etc/etcd/pki/etcd.key --cert /etc/etcd/pki/etcd.crt --endpoints https://{{ hostvars[ hostvars["localhost"]["etcd_main"] ].etcd_ip }}:2379 member add {{ inventory_hostname }} --peer-urls=https://{{ etcd_ip }}:2380 --learner'
+  changed_when: add_command_output.rc == 0
+  register: add_command_output
 - name: get id
   delegate_to: '{{ hostvars["localhost"]["etcd_main"] }}'
   command: '/opt/etcd/bin/etcdctl --cacert /etc/etcd/pki/ca.crt --key /etc/etcd/pki/etcd.key --cert /etc/etcd/pki/etcd.crt --endpoints https://{{ hostvars[ hostvars["localhost"]["etcd_main"] ].etcd_ip }}:2379 member list -w json'
+  changed_when: false
   register: get_id_output
-- debug:
+- name: debug ouput of list members command
+  debug:
     var: get_id_output
-- set_fact:
+- name: set query
+  set_fact:
     new_member_query: 'members[?(isLearner==`true`)].ID'  
-- debug:
-    var: new_member_query
-- set_fact:
+- name: set new_member_content
+  set_fact:
     new_member_content: '{{ get_id_output.stdout }}'
-- set_fact:
+- name: set id of new memeber
+  set_fact:
     new_member_id: "{{ '%0x' % (new_member_content | json_query(new_member_query) | first | int ) }}"
-- debug:
+- name: debug member id
+  debug:
     var: new_member_id
 - name: install
   include_role:
@@ -41,5 +48,4 @@
   until: promote_result.rc == 0
   retries: 10
   delay: 60
-- debug:
-    var: new_members_ok
+

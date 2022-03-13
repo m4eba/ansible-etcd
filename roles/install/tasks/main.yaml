@@ -1,25 +1,25 @@
 ---
 - name: download etcd
   get_url:
-    url: 'https://storage.googleapis.com/etcd/v{{etcd_version}}/etcd-v{{etcd_version}}-linux-amd64.tar.gz'
-    dest: '/opt/etcd/etcd-{{etcd_version}}.tgz'
+    url: 'https://storage.googleapis.com/etcd/v{{ etcd_version }}/etcd-v{{ etcd_version }}-linux-amd64.tar.gz'
+    dest: '/opt/etcd/etcd-{{ etcd_version }}.tgz'
     mode: 0755
     owner: root
     group: root
 
 - name: extract
   unarchive:
-    src: '/opt/etcd/etcd-{{etcd_version}}.tgz'
+    src: '/opt/etcd/etcd-{{ etcd_version }}.tgz'
     dest: /opt/etcd
     owner: root
     group: root
     remote_src: true
-    creates: '/opt/etcd/etcd-v{{etcd_version}}-linux-amd64/etcd'
+    creates: '/opt/etcd/etcd-v{{ etcd_version }}-linux-amd64/etcd'
 
 - name: system link
   file:
     path: '/opt/etcd/bin'
-    src: '/opt/etcd/etcd-v{{etcd_version}}-linux-amd64'
+    src: '/opt/etcd/etcd-v{{ etcd_version }}-linux-amd64'
     state: link
 
 - name: configuration file

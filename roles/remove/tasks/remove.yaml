@@ -1,7 +1,7 @@
 ---
 - name: set query
   set_fact:
-    query: 'members[?(name==`{{item}}`)].ID'
+    query: 'members[?(name==`{{ item }}`)].ID'
 - name: get id
   set_fact:
     remove_id: "{{ '%x' % (etcd_members  | json_query(query))[0] }}"
@@ -9,4 +9,6 @@
   debug:
     var: remove_id
 - name: remove command
-  command: '/opt/etcd/bin/etcdctl --cacert /etc/etcd/pki/ca.crt --key /etc/etcd/pki/etcd.key --cert /etc/etcd/pki/etcd.crt --endpoints https://{{etcd_ip}}:2379 member remove {{remove_id}} '
+  command: '/opt/etcd/bin/etcdctl --cacert /etc/etcd/pki/ca.crt --key /etc/etcd/pki/etcd.key --cert /etc/etcd/pki/etcd.crt --endpoints https://{{ etcd_ip }}:2379 member remove {{ remove_id }} '
+  register: remove_command_output
+  changed_when: remove_command_output.rc != 0

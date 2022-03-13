@@ -13,7 +13,7 @@
 
 - name: set running fact
   set_fact:
-    etcd_running: '{% if ansible_facts.services["etcd.service"] is defined %}{{ansible_facts.services["etcd.service"].state == "running"}}{% else %}false{% endif %}'
+    etcd_running: '{% if ansible_facts.services["etcd.service"] is defined %}{{ ansible_facts.services["etcd.service"].state == "running" }}{% else %}false{% endif %}'
 
 - name: debug etcd_running
   debug:
@@ -29,7 +29,7 @@
     etcd_key: '{{ stat_key.stat.exists }}'
 
 - name: members
-  shell: '/opt/etcd/bin/etcdctl --endpoints https://{{etcd_ip}}:2379 --cert=/etc/etcd/pki/etcd.crt --key=/etc/etcd/pki/etcd.key --cacert=/etc/etcd/pki/ca.crt member list --write-out json'
+  command: '/opt/etcd/bin/etcdctl --endpoints https://{{ etcd_ip }}:2379 --cert=/etc/etcd/pki/etcd.crt --key=/etc/etcd/pki/etcd.key --cacert=/etc/etcd/pki/ca.crt member list --write-out json'
   changed_when: false
   register: memberlist_out
   when: etcd_running
@@ -46,5 +46,6 @@
     etcd_main: '{{ inventory_hostname }}'
   when: etcd_running
 
-- debug:
+- name: debug members
+  debug:
     var: etcd_members

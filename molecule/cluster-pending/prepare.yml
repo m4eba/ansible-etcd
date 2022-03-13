@@ -2,7 +2,8 @@
 - name: get ip addresses
   hosts: all
   tasks:
-    - import_role: 
+    - name: import get ip
+      import_role: 
         name: get_ip
 - name: prepare cluster
   import_playbook: ../../playbooks/cluster.yaml
@@ -11,4 +12,6 @@
   tasks:
     - name: run add command
       delegate_to: instance1
-      command: '/opt/etcd/bin/etcdctl --cacert /etc/etcd/pki/ca.crt --key /etc/etcd/pki/etcd.key --cert /etc/etcd/pki/etcd.crt --endpoints https://{{ hostvars["instance1"]["etcd_ip"] }}:2379 member add {{inventory_hostname}} --peer-urls=https://{{etcd_ip}}:2380'
+      command: '/opt/etcd/bin/etcdctl --cacert /etc/etcd/pki/ca.crt --key /etc/etcd/pki/etcd.key --cert /etc/etcd/pki/etcd.crt --endpoints https://{{ hostvars["instance1"]["etcd_ip"] }}:2379 member add {{ inventory_hostname }} --peer-urls=https://{{ etcd_ip }}:2380'
+      changed_when: add_command_output.rc == 0
+      register: add_command_output
