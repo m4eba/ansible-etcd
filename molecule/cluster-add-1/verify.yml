@@ -6,5 +6,4 @@
   gather_facts: false
   tasks:
     - name: Example assertion
-      include_role:
-        name: test_etcd_cluster
+      include_tasks: ../resources/roles/test_etcd/tasks/main.yaml

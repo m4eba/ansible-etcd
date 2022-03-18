@@ -3,6 +3,5 @@
   hosts: all
   tasks:
     - name: import get ip
-      import_role: 
-        name: get_ip
+      import_tasks: ../resources/roles/get_ip/tasks/main.yaml
 - import_playbook: ../../playbooks/cluster.yaml
